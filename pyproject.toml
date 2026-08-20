@@ -15,7 +15,8 @@ dependencies = [
  "markitdown",
  "pandas",
  "google-cloud-documentai",
- "line-bot-sdk"
+ "line-bot-sdk",
+ "httpx"
 ]
 
 [build-system]
