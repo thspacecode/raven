@@ -29,6 +29,7 @@ repos:
     hooks:
       - id: black
         files: "raven.*"
+        exclude: "raven/omni_channel_chat/api/webhooks.py"
         additional_dependencies: ["click==8.0.4"]
 
   - repo: https://github.com/PyCQA/flake8
