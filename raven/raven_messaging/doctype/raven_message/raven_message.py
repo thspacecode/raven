@@ -720,10 +720,10 @@ class RavenMessage(Document):
 	def push_message_to_omni_channel_chat_provider(self) -> None:
 		from raven.omni_channel_chat.omni_channel_raven_connector import OmniChannelRavenConnector
 
-		channel = frappe.db.get_value(
-			doctype="Raven Channel",
-			filters=self.channel_id,
-			fieldname=["is_customer", "omni_channel_chat_provider"],
+		channel = frappe.get_cached_value(
+			"Raven Channel",
+			self.channel_id,
+			["is_customer", "omni_channel_chat_provider"],
 			as_dict=True,
 		)
 		if not channel or not channel.is_customer or not channel.omni_channel_chat_provider:
