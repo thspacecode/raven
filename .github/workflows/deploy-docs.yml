@@ -1,0 +1,99 @@
+name: Deploy Docs to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+      - '.github/workflows/deploy-docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: docs-github-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build Pages artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: docs
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: docs/pnpm-lock.yaml
+
+      - name: Configure GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Build docs
+        run: pnpm build
+        env:
+          THE_DOCS_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+
+      - name: Prepare Pages artifact
+        env:
+          THE_DOCS_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+        run: |
+          client_dir=".build/client"
+          base_dir="${THE_DOCS_BASE_PATH#/}"
+          base_dir="${base_dir%/}"
+
+          rm -rf .pages
+          mkdir .pages
+          cp -R "$client_dir"/. .pages/
+
+          # React Router prerenders below its basename, while GitHub Pages
+          # already removes the repository prefix before serving the artifact.
+          if [[ -n "$base_dir" ]]; then
+            cp -R "$client_dir/$base_dir"/. .pages/
+            rm -rf ".pages/$base_dir"
+          fi
+
+          touch .pages/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/.pages
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
