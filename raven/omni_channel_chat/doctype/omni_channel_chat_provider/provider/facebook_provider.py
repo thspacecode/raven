@@ -8,9 +8,7 @@ import frappe
 import httpx
 from werkzeug.wrappers import Response
 
-from raven.omni_channel_chat.doctype.omni_channel_chat_provider.provider import (
-	Provider,
-)
+from raven.omni_channel_chat.doctype.omni_channel_chat_provider.provider import Provider
 from raven.omni_channel_chat.models.message import (
 	ChatDestination,
 	FileContent,
@@ -169,9 +167,7 @@ class FacebookProvider(Provider[FacebookMessagingEvent]):
 		return result
 
 	def extract_messages(self, body: bytes, headers: dict) -> list[StdInboundEvent]:
-		signature = headers.get("X-Hub-Signature-256", "") or headers.get(
-			"x-hub-signature-256", ""
-		)
+		signature = headers.get("X-Hub-Signature-256", "") or headers.get("x-hub-signature-256", "")
 		if not self.verify_signature(body, signature):
 			frappe.throw("Invalid Facebook signature", frappe.PermissionError)
 

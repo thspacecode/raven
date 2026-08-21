@@ -13,14 +13,9 @@ from linebot.v3.messaging import (
 from linebot.v3.messaging.exceptions import NotFoundException
 from linebot.v3.webhook import WebhookParser
 from linebot.v3.webhooks import Event as LineEvent
-from linebot.v3.webhooks import (
-	FileMessageContent,
-	GroupSource,
-	ImageMessageContent,
-	RoomSource,
-	TextMessageContent,
-)
+from linebot.v3.webhooks import FileMessageContent, GroupSource, ImageMessageContent
 from linebot.v3.webhooks import MessageEvent as LineMessageEvent
+from linebot.v3.webhooks import RoomSource, TextMessageContent
 from werkzeug.wrappers import Response
 
 from raven.omni_channel_chat.models.message import (
@@ -30,11 +25,9 @@ from raven.omni_channel_chat.models.message import (
 	ImageMessage,
 	StdInboundEvent,
 	StdMessage,
-	UserDisplay,
 )
-from raven.omni_channel_chat.models.message import (
-	TextMessage as StdTextMessage,
-)
+from raven.omni_channel_chat.models.message import TextMessage as StdTextMessage
+from raven.omni_channel_chat.models.message import UserDisplay
 
 from . import Provider
 

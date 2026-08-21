@@ -33,6 +33,7 @@ class RavenMessage(Document):
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
+
 		from raven.raven_messaging.doctype.raven_mention.raven_mention import RavenMention
 
 		blurhash: DF.SmallText | None
@@ -164,9 +165,7 @@ class RavenMessage(Document):
 
 		if not self.is_new() and self.has_value_changed("message_reactions"):
 			frappe.throw(
-				_(
-					"Direct modification of message_reactions is not allowed. Use the Reactions API."
-				)
+				_("Direct modification of message_reactions is not allowed. Use the Reactions API.")
 			)
 
 	def validate_linked_message(self):
@@ -175,8 +174,7 @@ class RavenMessage(Document):
 		"""
 		if self.linked_message:
 			if (
-				frappe.get_cached_value("Raven Message", self.linked_message, "channel_id")
-				!= self.channel_id
+				frappe.get_cached_value("Raven Message", self.linked_message, "channel_id") != self.channel_id
 			):
 				frappe.throw(_("Linked message should be in the same channel"))
 
@@ -519,9 +517,7 @@ class RavenMessage(Document):
 		if is_thread:
 			title = f"{owner_name} in thread"
 		else:
-			channel_name = frappe.get_cached_value(
-				"Raven Channel", self.channel_id, "channel_name"
-			)
+			channel_name = frappe.get_cached_value("Raven Channel", self.channel_id, "channel_name")
 			title = f"{owner_name} in #{channel_name}"
 
 		# Prepare content for data payload - truncate if text message
@@ -723,6 +719,15 @@ class RavenMessage(Document):
 
 	def push_message_to_omni_channel_chat_provider(self) -> None:
 		from raven.omni_channel_chat.omni_channel_raven_connector import OmniChannelRavenConnector
+
+		channel = frappe.get_cached_value(
+			"Raven Channel",
+			self.channel_id,
+			["is_customer", "omni_channel_chat_provider"],
+			as_dict=True,
+		)
+		if not channel or not channel.is_customer or not channel.omni_channel_chat_provider:
+			return
 
 		provider = OmniChannelRavenConnector.get_provider_from_channel(self.channel_id)
 		connector = OmniChannelRavenConnector(provider=provider)
