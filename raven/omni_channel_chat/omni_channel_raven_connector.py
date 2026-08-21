@@ -22,13 +22,9 @@ from raven.omni_channel_chat.models.message import (
 if TYPE_CHECKING:
 	from frappe.core.doctype.user.user import User
 
-	from raven.omni_channel_chat.doctype.omni_channel_chat_provider.provider import (
-		Provider,
-	)
+	from raven.omni_channel_chat.doctype.omni_channel_chat_provider.provider import Provider
 	from raven.raven.doctype.raven_user.raven_user import RavenUser
-	from raven.raven_channel_management.doctype.raven_channel.raven_channel import (
-		RavenChannel,
-	)
+	from raven.raven_channel_management.doctype.raven_channel.raven_channel import RavenChannel
 	from raven.raven_messaging.doctype.raven_message.raven_message import RavenMessage
 
 
@@ -46,9 +42,7 @@ class OmniChannelRavenConnector:
 			fieldname="omni_channel_chat_provider",
 		)
 		if not provider_name:
-			frappe.throw(
-				_("Omni Channel Chat Provider not found for channel {0}").format(channel_name)
-			)
+			frappe.throw(_("Omni Channel Chat Provider not found for channel {0}").format(channel_name))
 		return get_omni_channel_chat_provider(
 			slug=provider_name,
 		)
@@ -303,9 +297,7 @@ class OmniChannelRavenConnector:
 
 		if isinstance(message, TextMessage):
 			doc.text = message.text
-		elif isinstance(message, (ImageMessage, FileMessage)) and isinstance(
-			message.file, FileContent
-		):
+		elif isinstance(message, (ImageMessage, FileMessage)) and isinstance(message.file, FileContent):
 			file_doc = frappe.get_doc(
 				{
 					"doctype": "File",

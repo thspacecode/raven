@@ -15,11 +15,11 @@ def extract_provider_slug() -> str:
 	should process the incoming request.
 
 	Returns:
-		str: The slug portion of the request path.
+	        str: The slug portion of the request path.
 
 	Example:
-		For a request to `/api/method/raven.omni_channel_chat.api.webhooks.handle/g9ju6k0e8r`,
-		this returns `g9ju6k0e8r`.
+	        For a request to `/api/method/raven.omni_channel_chat.api.webhooks.handle/g9ju6k0e8r`,
+	        this returns `g9ju6k0e8r`.
 	"""
 	request = frappe.local.request
 	return request.path.rstrip("/").rsplit("/", 1)[-1]
@@ -29,7 +29,7 @@ def extract_provider_slug() -> str:
 def handle() -> Response:
 	"""
 	Endpoint:
-		/api/method/raven.omni_channel_chat.api.webhooks.handle
+	        /api/method/raven.omni_channel_chat.api.webhooks.handle
 	"""
 	slug = extract_provider_slug()
 	provider = get_omni_channel_chat_provider(slug=slug)

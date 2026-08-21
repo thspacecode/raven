@@ -2,15 +2,9 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Callable, Literal
 
-from linebot.v3.messaging import (
-	ImageMessage as LineImageMessage,
-)
-from linebot.v3.messaging import (
-	Sender as LineSender,
-)
-from linebot.v3.messaging import (
-	TextMessageV2 as LineTextMessage,
-)
+from linebot.v3.messaging import ImageMessage as LineImageMessage
+from linebot.v3.messaging import Sender as LineSender
+from linebot.v3.messaging import TextMessageV2 as LineTextMessage
 
 if TYPE_CHECKING:
 	from raven.omni_channel_chat.doctype.omni_channel_chat_provider.omni_channel_chat_provider import (
